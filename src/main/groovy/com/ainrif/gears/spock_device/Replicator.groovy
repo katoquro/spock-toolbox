@@ -1,0 +1,91 @@
+/*
+ * Copyright 2014-2016 Ainrif <support@ainrif.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package com.ainrif.gears.spock_device
+
+import com.ainrif.gears.spock_device.internal.ErrorDescription
+import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.FirstParam
+
+import java.lang.reflect.Field
+
+import static java.lang.reflect.Modifier.isFinal
+
+class Replicator {
+    /**
+     * Create instance of given type
+     * @param type
+     * @param init
+     * @return
+     */
+    static <T> T replicate(@DelegatesTo.Target Class<T> type,
+                           @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
+                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+        return replicate(type, null, init)
+    }
+
+    static <T> T replicate(@DelegatesTo.Target Class<T> type,
+                           List<Object> args,
+                           @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
+                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+        def instance = instantiateType(type, args as Object[])
+        instance.metaClass.tricordered = [set: []]
+        instance.metaClass.setProperty = { name, value ->
+            delegate.@"$name" = value
+            delegate.tricordered['set'] << name
+        }
+        init.delegate = instance
+        init.resolveStrategy = Closure.DELEGATE_FIRST
+        init.call(instance)
+
+        def fieldNames = getMutableFields(type)*.name
+        def touchedFields = instance.tricordered['set'].asType(List)
+
+        if (!(fieldNames.size() == touchedFields.size() && fieldNames.containsAll(touchedFields))) {
+            def diff = fieldNames - touchedFields
+            throw new AssertionError(new ErrorDescription('Not all fields were set', fieldNames, touchedFields, diff))
+        }
+
+        return instance
+    }
+
+    /*
+    * Protected Date Generator API
+    */
+
+    protected static List<Field> getMutableFields(Class clazz) {
+        def _clazz = clazz;
+        List<Field> fields = _clazz.interface ? [] : _clazz.declaredFields as List
+
+        while (null != (_clazz = _clazz.superclass)) {
+            fields += _clazz.declaredFields as List
+        }
+
+        fields.findAll { !it.synthetic && !isFinal(it.modifiers) }
+    }
+
+    protected static <T> T instantiateType(Class<T> type, Object[] args = null) {
+        T instance
+        if (args) {
+            instance = type.newInstance(args)
+        } else {
+            instance = type.newInstance()
+        }
+
+        instance
+    }
+}
