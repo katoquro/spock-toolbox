@@ -20,8 +20,19 @@ import org.unitils.reflectionassert.ReflectionComparator
 import org.unitils.reflectionassert.comparator.Comparator
 import org.unitils.reflectionassert.difference.Difference
 
+/**
+ * Compare doubles with precision 1e-14
+ * <p>
+ * precision can be configured with {@link DOUBLE_SCALE#scale(double)}
+ */
 class DOUBLE_SCALE implements Comparator {
 
+    /**
+     * Gen new customised comparator
+     *
+     * @param doubleError precision
+     * @return comparator instance
+     */
     static DOUBLE_SCALE scale(double doubleError) {
         new DOUBLE_SCALE(doubleError)
     }

@@ -25,12 +25,20 @@ import java.lang.reflect.Field
 
 import static java.lang.reflect.Modifier.isFinal
 
+/**
+ * Provides different ways to create or instantiate objects.
+ * Usually used in `setup` or `given` stanzas
+ */
 class Replicator {
+
     /**
-     * Create instance of given type
-     * @param type
-     * @param init
-     * @return
+     * Create instance of given type and check that all were touched,
+     * e.g. fields were set in init closure or assigned to null
+     *
+     * @param type to initialise
+     * @param init post-initialise closure delegated to new instance
+     *
+     * @return new initialized object
      */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
@@ -38,6 +46,20 @@ class Replicator {
         return replicate(type, null, init)
     }
 
+    /**
+     * The same as {@link #replicate(java.lang.Class, groovy.lang.Closure)} but uses non default constructors
+     * to initialise instance.
+     * <p>
+     * Use this method if you want to initialise class with final fields which are set via the constructor
+     * otherwise use {@link #replicate(java.lang.Class, groovy.lang.Closure)} even if java type doesn't have
+     * default constructor
+     *
+     * @param type to initialise
+     * @param args params for constructor, type should have corresponding constructor
+     * @param init post-initialise closure delegated to new instance
+     *
+     * @return new initialized object
+     */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            List<Object> args,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
@@ -75,7 +97,7 @@ class Replicator {
             fields += _clazz.declaredFields as List
         }
 
-        fields.findAll { !it.synthetic && !isFinal(it.modifiers) }
+        return fields.findAll { !it.synthetic && !isFinal(it.modifiers) }
     }
 
     protected static <T> T instantiateType(Class<T> type, Object[] args = null) {
@@ -86,6 +108,6 @@ class Replicator {
             instance = type.newInstance()
         }
 
-        instance
+        return instance
     }
 }

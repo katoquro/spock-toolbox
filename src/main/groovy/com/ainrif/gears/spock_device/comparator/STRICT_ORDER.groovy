@@ -18,10 +18,9 @@ package com.ainrif.gears.spock_device.comparator
 
 import org.unitils.reflectionassert.comparator.Comparator
 import org.unitils.reflectionassert.comparator.impl.CollectionComparator
-import org.unitils.reflectionassert.comparator.impl.LenientOrderCollectionComparator
 
 /**
- * wrapper of {@link LenientOrderCollectionComparator}
+ * wrapper of {@link CollectionComparator}
  */
 class STRICT_ORDER implements Comparator {
     private @Delegate CollectionComparator comparator = new CollectionComparator();

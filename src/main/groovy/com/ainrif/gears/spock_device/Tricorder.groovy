@@ -18,8 +18,11 @@ package com.ainrif.gears.spock_device
 
 import com.ainrif.gears.spock_device.internal.ReflectsMatcher
 
+/**
+ * Provides functionality to analyse objects
+ */
 class Tricorder {
-    static boolean reflects(def actual, def expected) {
-        new ReflectsMatcher(actual, expected)
+    static ReflectsMatcher reflects(def actual, def expected) {
+        return new ReflectsMatcher(actual, expected)
     }
 }

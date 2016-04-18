@@ -18,13 +18,14 @@ package com.ainrif.gears.spock_device.comparator
 
 import org.unitils.reflectionassert.ReflectionComparator
 import org.unitils.reflectionassert.comparator.Comparator
-import org.unitils.reflectionassert.comparator.impl.LenientDatesComparator
 import org.unitils.reflectionassert.difference.Difference
 
 import java.time.temporal.Temporal
 
 /**
- * wrapper of {@link LenientDatesComparator}
+ * Comparator that checks whether 2 dates are both null or not null, the actual time-value is not compared.
+ * This can be useful when the actual time/date is not known is advance but you still want to check whether
+ * a value has been set or not, e.g. a last modification timestamp in the database.
  */
 class IGNORE_TIME_DIFF implements Comparator {
 
