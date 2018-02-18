@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
-import com.ainrif.gears.spock_device.comparator.DOUBLE_SCALE
-import com.ainrif.gears.spock_device.comparator.STRICT_ORDER
+import com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE
+import com.ainrif.gears.spock_toolbox.comparator.STRICT_ORDER
 import spock.lang.Specification
 
-import static com.ainrif.gears.spock_device.Replicator.replicate
+import static com.ainrif.gears.spock_toolbox.Replicator.replicate
 
 class ReflectionMatcherBuilderSpec extends Specification {
     def "similar objects with different hierarchy shouldn't be equal"() {

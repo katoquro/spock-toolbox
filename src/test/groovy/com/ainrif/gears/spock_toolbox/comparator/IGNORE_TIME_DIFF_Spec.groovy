@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.comparator
+package com.ainrif.gears.spock_toolbox.comparator
 
 import spock.lang.Specification
 

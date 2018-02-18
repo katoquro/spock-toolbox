@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-import static com.ainrif.gears.spock_device.internal.DiffPath.WILDCARD
+import static com.ainrif.gears.spock_toolbox.internal.DiffPath.WILDCARD
 
 @ToString(includePackage = false, includeNames = true)
 @EqualsAndHashCode

@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.comparator
+package com.ainrif.gears.spock_toolbox
 
-import org.unitils.reflectionassert.comparator.Comparator
-import org.unitils.reflectionassert.comparator.impl.CollectionComparator
+import com.ainrif.gears.spock_toolbox.internal.ReflectionMatcherBuilder
 
 /**
- * wrapper of {@link CollectionComparator}
+ * Provides functionality to analyse objects
  */
-class STRICT_ORDER implements Comparator {
-    private @Delegate CollectionComparator comparator = new CollectionComparator()
+class Tricorder {
+    /**
+     * @see ReflectionMatcherBuilder
+     */
+    static ReflectionMatcherBuilder reflects(def actual, def expected) {
+        return new ReflectionMatcherBuilder(actual, expected)
+    }
 }

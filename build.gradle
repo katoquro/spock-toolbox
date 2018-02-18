@@ -5,8 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.4.2'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
     }
 }
 
@@ -17,7 +16,7 @@ apply plugin: 'maven-publish'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group 'com.ainrif.gears'
-version '0.1.1'
+version '0.2.0'
 
 repositories {
     jcenter()
@@ -28,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:2.4.6"
 
-    compile 'org.slf4j:slf4j-api:1.7.9'
+    compile "org.codehaus.groovy:groovy-all:2.4.13"
+    compile 'org.slf4j:slf4j-api:1.7.25'
 
     compile "org.spockframework:spock-core:1.0-groovy-2.4", {
         exclude group: 'junit'
@@ -38,23 +37,25 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 
+    compile 'org.hamcrest:hamcrest-all:1.3'
     compile "junit:junit:4.12", {
         exclude group: 'org.hamcrest'
     }
-    compile 'org.unitils:unitils-core:3.4.2'
 
-    compile 'org.hamcrest:hamcrest-all:1.3'
+    compile 'org.unitils:unitils-core:3.4.6', {
+        exclude group: 'junit'
+    }
 
-    testCompile 'org.slf4j:jcl-over-slf4j:1.7.9'
-    testCompile 'org.slf4j:log4j-over-slf4j:1.7.9'
+    testCompile 'org.slf4j:jcl-over-slf4j:1.7.25'
+    testCompile 'org.slf4j:log4j-over-slf4j:1.7.25'
 }
 
-
 configurations {
-    all*.exclude module: 'log4j'
-    all*.exclude module: 'commons-logging'
-    all*.exclude group: 'asm', module: 'asm'
-    all*.exclude group: 'org.ow2.asm', module: 'asm'
+    all {
+        it.exclude group: 'commons-logging'
+        it.exclude group: 'org.apache.logging.log4j'
+        it.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
 }
 
 test {

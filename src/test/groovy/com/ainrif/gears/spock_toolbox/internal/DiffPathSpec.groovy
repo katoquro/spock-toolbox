@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import spock.lang.Specification
 
 import java.util.Map.Entry
 
-import static com.ainrif.gears.spock_device.Replicator.replicate
-import static com.ainrif.gears.spock_device.internal.DiffNode.ROOT_DESIGNATION
+import static com.ainrif.gears.spock_toolbox.Replicator.replicate
+import static com.ainrif.gears.spock_toolbox.internal.DiffNode.ROOT_DESIGNATION
 
 class DiffPathSpec extends Specification {
     def "path should have ability to be created from string"(Entry<String, DiffPath> data) {

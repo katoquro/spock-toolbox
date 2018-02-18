@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import spock.lang.Specification
 
-import static com.ainrif.gears.spock_device.Replicator.replicate
+import static com.ainrif.gears.spock_toolbox.Replicator.replicate
 
 class DiffNodeSpec extends Specification {
     def "should support exclude of plain fields"() {

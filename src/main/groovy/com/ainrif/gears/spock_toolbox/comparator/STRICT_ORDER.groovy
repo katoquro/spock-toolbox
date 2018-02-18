@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.comparator
 
-class ReplicatorErrorDescription {
-    def message
-    def expected
-    def butWas
-    def diff
+import org.unitils.reflectionassert.comparator.Comparator
+import org.unitils.reflectionassert.comparator.impl.CollectionComparator
 
-    ReplicatorErrorDescription(def message, def expected, def butWas, def diff = null) {
-        this.message = message
-        this.expected = expected
-        this.butWas = butWas
-        this.diff = diff
-    }
-
-    @Override
-    String toString() {
-        return message +
-                '\nExpected: ' + expected +
-                '\n but was: ' + butWas +
-                (diff ? '\n    diff: ' + diff : '')
-    }
+/**
+ * wrapper of {@link CollectionComparator}
+ */
+class STRICT_ORDER implements Comparator {
+    private @Delegate CollectionComparator comparator = new CollectionComparator()
 }

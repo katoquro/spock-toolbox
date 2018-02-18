@@ -1,17 +1,3 @@
-import org.ajoberstar.grgit.operation.OpenOp
-
-buildscript {
-    repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.4.2'
-    }
-}
-
-apply plugin: 'org.ajoberstar.grgit'
 apply plugin: "com.jfrog.bintray"
 
 ext.sharedManifest = manifest {
@@ -45,10 +31,8 @@ publishing {
 }
 
 bintray {
-    if (project.hasProperty('bintray_api_user') && project.hasProperty('bintray_api_key')) {
-        user = bintray_api_user
-        key = bintray_api_key
-    }
+    user = project.findProperty('bintray_api_user')
+    key = project.findProperty('bintray_api_key')
 
     publications = ['toMaven']
 
@@ -57,36 +41,18 @@ bintray {
     pkg {
         repo = 'maven'
         userOrg = 'ainrif'
-        name = rootProject.name
+        name = project.rootProject.name
         desc = 'Utils for Spock testing framework'
-        websiteUrl = 'https://bitbucket.org/ainrif/spock-device'
-        issueTrackerUrl = 'https://bitbucket.org/ainrif/spock-device/issues'
-        vcsUrl = 'git@bitbucket.org:ainrif/spock-device.git'
+        websiteUrl = 'https://bitbucket.org/ainrif/spock-toolbox'
+        issueTrackerUrl = 'https://bitbucket.org/ainrif/spock-toolbox/issues'
+        vcsUrl = 'git@bitbucket.org:ainrif/spock-toolbox.git'
         licenses = ['Apache-2.0']
         labels = ['test', 'spock', 'util', 'groovy']
         publicDownloadNumbers = true
         version {
             name = project.version
-            desc = 'Initial version'
             vcsTag = project.version
         }
-    }
-}
-
-bintrayUpload {
-    def git = new OpenOp(dir: '.').call()
-    onlyIf {
-        'master' == git.branch.current.name
-    }
-    doLast {
-        if (bintray.dryRun) {
-            logger.info("create tag `${project.version}` in git and push")
-            return
-        }
-
-        git.tag.add(name: project.version, annotate: false, force: true)
-        git.push(all: false)
-        git.push(tags: true)
     }
 }
 

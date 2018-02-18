@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import groovy.transform.Memoized
 import org.unitils.reflectionassert.comparator.Comparator
@@ -23,7 +23,7 @@ import org.unitils.reflectionassert.difference.Difference
 /**
  * Matcher provides reflection comparator for POJO types.
  * More convenient way to use it via
- * {@link com.ainrif.gears.spock_device.Tricorder#reflects(java.lang.Object, java.lang.Object)}
+ * {@link com.ainrif.gears.spock_toolbox.Tricorder#reflects(java.lang.Object, java.lang.Object)}
  * <p>
  * This matcher provides implementation of asBoolean method so can be used in any assertion sentences
  * or `then:` & `expect:` stanzas of Spock Framework
@@ -79,7 +79,7 @@ class ReflectionMatcherBuilder {
     /**
      * Set list of concrete comparators. Replaces all added before.
      * <p>
-     * Some modes can be instantiated with especial params f.e. {@link com.ainrif.gears.spock_device.comparator.DOUBLE_SCALE}.
+     * Some modes can be instantiated with especial params f.e. {@link com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE}.
      * By default it's used with scale 1e-14 but it can be changed via instance of comparator:
      * <pre>
      * Tricorder.reflects(new Double(0.42), new Double(0.425))
@@ -96,7 +96,7 @@ class ReflectionMatcherBuilder {
     /**
      * Add concrete comparator to the list.
      * <p>
-     * Some modes can be instantiated with especial params f.e. {@link com.ainrif.gears.spock_device.comparator.DOUBLE_SCALE}.
+     * Some modes can be instantiated with especial params f.e. {@link com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE}.
      * By default it's used with scale 1e-14 but it can be changed via instance of comparator:
      * <pre>
      * Tricorder.reflects(new Double(0.42), new Double(0.425))

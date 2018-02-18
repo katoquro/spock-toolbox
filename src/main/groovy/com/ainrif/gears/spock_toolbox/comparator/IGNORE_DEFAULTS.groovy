@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device
+package com.ainrif.gears.spock_toolbox.comparator
 
-import com.ainrif.gears.spock_device.internal.ReflectionMatcherBuilder
+import org.unitils.reflectionassert.comparator.Comparator
+import org.unitils.reflectionassert.comparator.impl.IgnoreDefaultsComparator
 
 /**
- * Provides functionality to analyse objects
+ * wrapper of {@link IgnoreDefaultsComparator}
  */
-class Tricorder {
-    /**
-     * @see ReflectionMatcherBuilder
-     */
-    static ReflectionMatcherBuilder reflects(def actual, def expected) {
-        return new ReflectionMatcherBuilder(actual, expected)
-    }
+class IGNORE_DEFAULTS implements Comparator {
+    @Delegate IgnoreDefaultsComparator comparator = new IgnoreDefaultsComparator()
 }

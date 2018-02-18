@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import static java.util.Collections.singletonList
 

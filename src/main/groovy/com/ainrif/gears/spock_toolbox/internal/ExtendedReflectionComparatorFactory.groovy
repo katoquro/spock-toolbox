@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
-import com.ainrif.gears.spock_device.comparator.DOUBLE_SCALE
-import com.ainrif.gears.spock_device.comparator.IGNORE_DEFAULTS
-import com.ainrif.gears.spock_device.comparator.IGNORE_TIME_DIFF
-import com.ainrif.gears.spock_device.comparator.STRICT_ORDER
+import com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE
+import com.ainrif.gears.spock_toolbox.comparator.IGNORE_DEFAULTS
+import com.ainrif.gears.spock_toolbox.comparator.IGNORE_TIME_DIFF
+import com.ainrif.gears.spock_toolbox.comparator.STRICT_ORDER
 import org.unitils.reflectionassert.ReflectionComparator
 import org.unitils.reflectionassert.ReflectionComparatorFactory
 import org.unitils.reflectionassert.comparator.Comparator

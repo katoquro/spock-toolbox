@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device
+package com.ainrif.gears.spock_toolbox
 
 import spock.lang.FailsWith
 import spock.lang.Specification

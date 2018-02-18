@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Ainrif <support@ainrif.com>
+ * Copyright 2014-2017 Ainrif <support@ainrif.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.comparator
+package com.ainrif.gears.spock_toolbox.internal
 
-import org.unitils.reflectionassert.comparator.Comparator
-import org.unitils.reflectionassert.comparator.impl.IgnoreDefaultsComparator
+import org.unitils.core.util.ObjectFormatter
 
-/**
- * wrapper of {@link IgnoreDefaultsComparator}
- */
-class IGNORE_DEFAULTS implements Comparator {
-    @Delegate IgnoreDefaultsComparator comparator = new IgnoreDefaultsComparator()
+class ObjFormatter extends ObjectFormatter {
+
+    @Override
+    protected boolean formatString(Object object, StringBuilder result) {
+        if (object instanceof String) {
+            result.append(object)
+            return true
+        }
+
+        return false
+    }
 }

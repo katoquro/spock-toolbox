@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device.internal
+package com.ainrif.gears.spock_toolbox.internal
 
 import org.unitils.reflectionassert.difference.Difference
 import spock.lang.Specification
 
-import static com.ainrif.gears.spock_device.Replicator.replicate
+import static com.ainrif.gears.spock_toolbox.Replicator.replicate
 
 class DiffParserVisitorSpec extends Specification {
 

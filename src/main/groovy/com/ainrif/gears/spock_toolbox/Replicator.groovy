@@ -15,9 +15,9 @@
  */
 
 
-package com.ainrif.gears.spock_device
+package com.ainrif.gears.spock_toolbox
 
-import com.ainrif.gears.spock_device.internal.ReplicatorErrorDescription
+import com.ainrif.gears.spock_toolbox.internal.ReplicatorErrorDescription
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 
