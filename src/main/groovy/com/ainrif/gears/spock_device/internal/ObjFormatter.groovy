@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 Ainrif <support@ainrif.com>
+ * Copyright 2014-2017 Ainrif <support@ainrif.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.ainrif.gears.spock_device
+package com.ainrif.gears.spock_device.internal
 
-import com.ainrif.gears.spock_device.internal.ReflectionMatcherBuilder
+import org.unitils.core.util.ObjectFormatter
 
-/**
- * Provides functionality to analyse objects
- */
-class Tricorder {
-    /**
-     * @see ReflectionMatcherBuilder
-     */
-    static ReflectionMatcherBuilder reflects(def actual, def expected) {
-        return new ReflectionMatcherBuilder(actual, expected)
+class ObjFormatter extends ObjectFormatter {
+
+    @Override
+    protected boolean formatString(Object object, StringBuilder result) {
+        if (object instanceof String) {
+            result.append(object)
+            return true
+        }
+
+        return false
     }
 }

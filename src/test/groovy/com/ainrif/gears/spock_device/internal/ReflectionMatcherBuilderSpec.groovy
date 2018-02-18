@@ -22,7 +22,7 @@ import spock.lang.Specification
 
 import static com.ainrif.gears.spock_device.Replicator.replicate
 
-class ReflectsMatcherSpec extends Specification {
+class ReflectionMatcherBuilderSpec extends Specification {
     def "similar objects with different hierarchy shouldn't be equal"() {
         given:
         def actual = replicate(Pojo1) {
@@ -36,7 +36,7 @@ class ReflectsMatcherSpec extends Specification {
         }
 
         expect:
-        !new ReflectsMatcher(actual, expected)
+        !new ReflectionMatcherBuilder(actual, expected)
     }
 
     def "similar subclasses should be equal"() {
@@ -52,7 +52,7 @@ class ReflectsMatcherSpec extends Specification {
         }
 
         expect:
-        new ReflectsMatcher(actual, expected)
+        new ReflectionMatcherBuilder(actual, expected)
     }
 
     def "superclasses cannot be equal to subclasses"() {
@@ -68,7 +68,7 @@ class ReflectsMatcherSpec extends Specification {
         }
 
         expect:
-        !new ReflectsMatcher(actual, expected)
+        !new ReflectionMatcherBuilder(actual, expected)
     }
 
     def "by default order in arrays is ignored"() {
@@ -89,8 +89,8 @@ class ReflectsMatcherSpec extends Specification {
         }
 
         expect:
-        new ReflectsMatcher(actual, expected)
-        !new ReflectsMatcher(actual, expected).mode(STRICT_ORDER)
+        new ReflectionMatcherBuilder(actual, expected)
+        !new ReflectionMatcherBuilder(actual, expected).mode(STRICT_ORDER)
     }
 
     def "any field should be available to exclude"() {
@@ -115,7 +115,7 @@ class ReflectsMatcherSpec extends Specification {
         }
 
         expect:
-        new ReflectsMatcher(actual, expected)
+        new ReflectionMatcherBuilder(actual, expected)
                 .excludeFields('list', 'pojo.stringValue', 'stringValue')
     }
 
@@ -125,16 +125,16 @@ class ReflectsMatcherSpec extends Specification {
         def expected = new WithDoubles(d: 1)
 
         expect:
-        new ReflectsMatcher(actual, expected)
+        new ReflectionMatcherBuilder(actual, expected)
 
         when:
         actual = new WithDoubles(d: 0.025)
         expected = new WithDoubles(d: 0.026)
 
         then:
-        !new ReflectsMatcher(actual, expected).comparator(DOUBLE_SCALE.scale(0.00001))
-        new ReflectsMatcher(actual, expected).comparator(DOUBLE_SCALE.scale(0.001))
-        !new ReflectsMatcher(actual, expected)
+        !new ReflectionMatcherBuilder(actual, expected).comparator(DOUBLE_SCALE.scale(0.00001))
+        new ReflectionMatcherBuilder(actual, expected).comparator(DOUBLE_SCALE.scale(0.001))
+        !new ReflectionMatcherBuilder(actual, expected)
     }
 
     private static class Pojo1 {

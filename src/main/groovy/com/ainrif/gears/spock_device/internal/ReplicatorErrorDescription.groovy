@@ -16,13 +16,13 @@
 
 package com.ainrif.gears.spock_device.internal
 
-class ErrorDescription {
+class ReplicatorErrorDescription {
     def message
     def expected
     def butWas
     def diff
 
-    ErrorDescription(def message, def expected, def butWas, def diff = null) {
+    ReplicatorErrorDescription(def message, def expected, def butWas, def diff = null) {
         this.message = message
         this.expected = expected
         this.butWas = butWas
@@ -30,10 +30,10 @@ class ErrorDescription {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return message +
                 '\nExpected: ' + expected +
-                '\n     but: ' + butWas +
+                '\n but was: ' + butWas +
                 (diff ? '\n    diff: ' + diff : '')
     }
 }

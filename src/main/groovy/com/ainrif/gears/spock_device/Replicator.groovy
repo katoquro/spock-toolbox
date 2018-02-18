@@ -17,7 +17,7 @@
 
 package com.ainrif.gears.spock_device
 
-import com.ainrif.gears.spock_device.internal.ErrorDescription
+import com.ainrif.gears.spock_device.internal.ReplicatorErrorDescription
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 
@@ -65,21 +65,22 @@ class Replicator {
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
                            @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
         def instance = instantiateType(type, args as Object[])
-        instance.metaClass.tricordered = [set: []]
+        instance.metaClass.tricordered = [set: new HashSet<String>()]
         instance.metaClass.setProperty = { name, value ->
             delegate.@"$name" = value
             delegate.tricordered['set'] << name
         }
+        init = init.clone() as Closure
         init.delegate = instance
         init.resolveStrategy = Closure.DELEGATE_FIRST
         init.call(instance)
 
         def fieldNames = getMutableFields(type)*.name
-        def touchedFields = instance.tricordered['set'].asType(List)
+        def touchedFields = instance.tricordered['set'] as Set
 
         if (!(fieldNames.size() == touchedFields.size() && fieldNames.containsAll(touchedFields))) {
             def diff = fieldNames - touchedFields
-            throw new AssertionError(new ErrorDescription('Not all fields were set', fieldNames, touchedFields, diff))
+            throw new AssertionError(new ReplicatorErrorDescription('Not all fields were set', fieldNames, touchedFields, diff))
         }
 
         return instance

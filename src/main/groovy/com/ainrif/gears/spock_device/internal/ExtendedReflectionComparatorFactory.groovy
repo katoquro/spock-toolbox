@@ -29,7 +29,7 @@ import org.unitils.reflectionassert.comparator.Comparator
  */
 class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
 
-    protected static HashMap<Class<? extends Comparator>, ? extends Comparator> comparatorRegistry = [
+    protected static HashMap<Class<? extends Comparator>, ? extends Comparator> modesRegistry = [
             (STRICT_ORDER)    : new STRICT_ORDER(),
             (IGNORE_TIME_DIFF): new IGNORE_TIME_DIFF(),
             (IGNORE_DEFAULTS) : new IGNORE_DEFAULTS(),
@@ -44,20 +44,20 @@ class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
      * @param modes null for strict comparison
      * @return reflection comparator
      */
-    public static ReflectionComparator create(List<Comparator> customComparators,
-                                              List<Class<? extends Comparator>> modes) {
-        List<Comparator> comparators = [];
-        comparators += customComparators;
+    static ReflectionComparator create(List<Comparator> customComparators,
+                                       List<Class<? extends Comparator>> modes) {
+        List<Comparator> comparators = []
+        comparators += customComparators
 
         modes.each {
-            comparators << comparatorRegistry.computeIfAbsent(it, { type -> type.newInstance() })
+            comparators << modesRegistry.computeIfAbsent(it, { type -> type.newInstance() })
         }
 
         if (!modes.contains(STRICT_ORDER)) {
             comparators << LENIENT_ORDER_COMPARATOR
         }
 
-        comparators << comparatorRegistry[DOUBLE_SCALE]
+        comparators << modesRegistry[DOUBLE_SCALE]
         comparators << LENIENT_NUMBER_COMPARATOR
         comparators << SIMPLE_CASES_COMPARATOR
         comparators << MAP_COMPARATOR

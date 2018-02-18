@@ -16,9 +16,9 @@
 
 package com.ainrif.gears.spock_device.internal
 
+import groovy.transform.Memoized
 import org.unitils.reflectionassert.comparator.Comparator
 import org.unitils.reflectionassert.difference.Difference
-import org.unitils.reflectionassert.report.impl.DefaultDifferenceView
 
 /**
  * Matcher provides reflection comparator for POJO types.
@@ -28,17 +28,16 @@ import org.unitils.reflectionassert.report.impl.DefaultDifferenceView
  * This matcher provides implementation of asBoolean method so can be used in any assertion sentences
  * or `then:` & `expect:` stanzas of Spock Framework
  */
-class ReflectsMatcher {
+class ReflectionMatcherBuilder {
     private final def actual
     private final def expected
     private List<Class<? extends Comparator>> modes = []
     private List<Comparator> comparators = []
     private List<String> excludedFields = []
 
-    private List<String> excludedReport
-    private List<String> diffReport
+    private DiffNode diffRoot
 
-    ReflectsMatcher(actual, expected) {
+    ReflectionMatcherBuilder(def actual, def expected) {
         this.actual = actual
         this.expected = expected
     }
@@ -55,9 +54,9 @@ class ReflectsMatcher {
      *   .modes(IGNORE_DEFAULTS, IGNORE_TIME_DIFF)
      * </pre>
      */
-    public ReflectsMatcher modes(Class<? extends Comparator>... modes) {
+    ReflectionMatcherBuilder modes(Class<? extends Comparator>... modes) {
         this.modes = modes as List
-        this
+        return this
     }
 
     /**
@@ -72,9 +71,9 @@ class ReflectsMatcher {
      *   .mode STRICT_ORDER
      * </pre>
      */
-    public ReflectsMatcher mode(Class<? extends Comparator> mode) {
+    ReflectionMatcherBuilder mode(Class<? extends Comparator> mode) {
         this.modes += mode
-        this
+        return this
     }
 
     /**
@@ -89,9 +88,9 @@ class ReflectsMatcher {
      * The result of comparison will be true because error is less than given 0.01.
      * Instance of given comparator wouldn't be cached and will be used only for this reflection call
      */
-    public ReflectsMatcher comparators(Comparator... comparators) {
+    ReflectionMatcherBuilder comparators(Comparator... comparators) {
         this.comparators = comparators as List
-        this
+        return this
     }
 
     /**
@@ -106,9 +105,9 @@ class ReflectsMatcher {
      * The result of comparison will be true because error is less than given 0.01.
      * Instance of given comparator wouldn't be cached and will be used only for this reflection call
      */
-    public ReflectsMatcher comparator(Comparator comparator) {
+    ReflectionMatcherBuilder comparator(Comparator comparator) {
         this.comparators += comparator
-        this
+        return this
     }
 
     /**
@@ -122,9 +121,9 @@ class ReflectsMatcher {
      *   .excludeFields('fieldOne', 'fieldTwo.fieldInNestedObject')
      * </pre>
      */
-    public ReflectsMatcher excludeFields(String... fields) {
+    ReflectionMatcherBuilder excludeFields(String... fields) {
         this.excludedFields = fields as List
-        this
+        return this
     }
 
     /**
@@ -138,27 +137,33 @@ class ReflectsMatcher {
      *   .excludeField('fieldName.fieldInNestedObject')
      * </pre>
      */
-    public ReflectsMatcher excludeField(String field) {
+    ReflectionMatcherBuilder excludeField(String field) {
         this.excludedFields += field
-        this
+        return this
     }
 
+
+    @Memoized
     boolean asBoolean() {
         Difference difference = ExtendedReflectionComparatorFactory
                 .create(comparators, modes)
                 .getDifference(expected, actual)
 
         if (difference) {
-            def report = new DefaultDifferenceView().createView(difference)
-            (excludedReport, diffReport) = report.split(/\r?\n(?!\s)/)
-                    .split { diff -> excludedFields.any { diff =~ /^$it(\[|\.|:).*/ } }
-        }
+            diffRoot = new DiffParserVisitor().parse(difference)
 
-        return !diffReport
+            excludedFields.each { diffRoot.exclude(DiffPath.fromString(it)) }
+
+            return !diffRoot.containsDiff()
+        } else {
+            return true
+        }
     }
 
     @Override
     String toString() {
-        return diffReport.join('\r\n')
+        asBoolean()
+
+        return new DiffReport(diffRoot).createReport()
     }
 }

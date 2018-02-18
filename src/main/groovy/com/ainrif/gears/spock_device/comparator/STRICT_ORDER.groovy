@@ -23,5 +23,5 @@ import org.unitils.reflectionassert.comparator.impl.CollectionComparator
  * wrapper of {@link CollectionComparator}
  */
 class STRICT_ORDER implements Comparator {
-    private @Delegate CollectionComparator comparator = new CollectionComparator();
+    private @Delegate CollectionComparator comparator = new CollectionComparator()
 }
