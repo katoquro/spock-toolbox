@@ -39,20 +39,21 @@ class DOUBLE_SCALE implements Comparator {
 
     protected double doubleError
 
-    public DOUBLE_SCALE() {
-        this(1e-14)
+    DOUBLE_SCALE() {
+        this(1e-14d)
     }
 
     protected DOUBLE_SCALE(double doubleError) {
         this.doubleError = doubleError
     }
 
-    @Override public boolean canCompare(Object left, Object right) {
+    @Override
+    boolean canCompare(Object left, Object right) {
         return left instanceof Double && right instanceof Double
     }
 
     @Override
-    public Difference compare(Object left, Object right, boolean onlyFirstDifference, ReflectionComparator reflectionComparator) {
+    Difference compare(Object left, Object right, boolean onlyFirstDifference, ReflectionComparator reflectionComparator) {
         return Math.abs((double) left - (double) right) > doubleError ?
                 new Difference("Different double values", left, right) :
                 null

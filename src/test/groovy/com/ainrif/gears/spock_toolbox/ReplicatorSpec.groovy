@@ -19,7 +19,7 @@ package com.ainrif.gears.spock_toolbox
 import spock.lang.FailsWith
 import spock.lang.Specification
 
-import static Replicator.replicate
+import static com.ainrif.gears.spock_toolbox.Replicator.replicate
 
 class ReplicatorSpec extends Specification {
     def "all fields should be set"() {

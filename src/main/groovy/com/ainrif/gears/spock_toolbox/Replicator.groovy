@@ -28,17 +28,13 @@ import static java.lang.reflect.Modifier.isFinal
 /**
  * Provides different ways to create or instantiate objects.
  * Usually used in `setup` or `given` stanzas
+ * @deprecated {@link SpockToolbox} methods of these class will become private in future release
  */
+@Deprecated
 class Replicator {
 
     /**
-     * Create instance of given type and check that all were touched,
-     * e.g. fields were set in init closure or assigned to null
-     *
-     * @param type to initialise
-     * @param init post-initialise closure delegated to new instance
-     *
-     * @return new initialized object
+     * @see SpockToolbox#replicate(java.lang.Class, groovy.lang.Closure)
      */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
@@ -47,28 +43,17 @@ class Replicator {
     }
 
     /**
-     * The same as {@link #replicate(java.lang.Class, groovy.lang.Closure)} but uses non default constructors
-     * to initialise instance.
-     * <p>
-     * Use this method if you want to initialise class with final fields which are set via the constructor
-     * otherwise use {@link #replicate(java.lang.Class, groovy.lang.Closure)} even if java type doesn't have
-     * default constructor
-     *
-     * @param type to initialise
-     * @param args params for constructor, type should have corresponding constructor
-     * @param init post-initialise closure delegated to new instance
-     *
-     * @return new initialized object
+     * @see SpockToolbox#replicate(java.lang.Class, java.util.List, groovy.lang.Closure)
      */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            List<Object> args,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
                            @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
         def instance = instantiateType(type, args as Object[])
-        instance.metaClass.tricordered = [set: new HashSet<String>()]
+        instance.metaClass.replicated = [set: new HashSet<String>()]
         instance.metaClass.setProperty = { name, value ->
             delegate.@"$name" = value
-            delegate.tricordered['set'] << name
+            delegate.replicated['set'] << name
         }
         init = init.clone() as Closure
         init.delegate = instance
@@ -76,7 +61,7 @@ class Replicator {
         init.call(instance)
 
         def fieldNames = getMutableFields(type)*.name
-        def touchedFields = instance.tricordered['set'] as Set
+        def touchedFields = instance.replicated['set'] as Set
 
         if (!(fieldNames.size() == touchedFields.size() && fieldNames.containsAll(touchedFields))) {
             def diff = fieldNames - touchedFields
@@ -87,15 +72,14 @@ class Replicator {
     }
 
     /*
-    * Protected Date Generator API
+    * Protected Generator API
     */
 
-    protected static List<Field> getMutableFields(Class clazz) {
-        def _clazz = clazz;
-        List<Field> fields = _clazz.interface ? [] : _clazz.declaredFields as List
+    protected static List<Field> getMutableFields(Class type) {
+        List<Field> fields = type.interface ? [] : type.declaredFields as List
 
-        while (null != (_clazz = _clazz.superclass)) {
-            fields += _clazz.declaredFields as List
+        while (null != (type = type.superclass)) {
+            fields += type.declaredFields as List
         }
 
         return fields.findAll { !it.synthetic && !isFinal(it.modifiers) }

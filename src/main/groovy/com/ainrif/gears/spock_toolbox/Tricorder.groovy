@@ -20,7 +20,9 @@ import com.ainrif.gears.spock_toolbox.internal.ReflectionMatcherBuilder
 
 /**
  * Provides functionality to analyse objects
+ * @deprecated {@link SpockToolbox} methods of these class will become private in future release
  */
+@Deprecated
 class Tricorder {
     /**
      * @see ReflectionMatcherBuilder

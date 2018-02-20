@@ -23,7 +23,7 @@ import org.unitils.reflectionassert.difference.Difference
 /**
  * Matcher provides reflection comparator for POJO types.
  * More convenient way to use it via
- * {@link com.ainrif.gears.spock_toolbox.Tricorder#reflects(java.lang.Object, java.lang.Object)}
+ * {@link com.ainrif.gears.spock_toolbox.SpockToolbox#reflects(java.lang.Object, java.lang.Object)}
  * <p>
  * This matcher provides implementation of asBoolean method so can be used in any assertion sentences
  * or `then:` & `expect:` stanzas of Spock Framework
