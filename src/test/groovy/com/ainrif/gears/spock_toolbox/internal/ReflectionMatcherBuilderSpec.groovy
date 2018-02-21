@@ -104,6 +104,23 @@ class ReflectionMatcherBuilderSpec extends Specification {
                 .excludeFields('list', 'pojo.stringValue', 'stringValue')
     }
 
+    def "paths without diff and not existed, can be excluded quietly"() {
+        given:
+        def actual = replicate(Pojo2) {
+            stringValue = 'actual'
+            intValue = 42
+        }
+
+        def expected = replicate(Pojo2) {
+            stringValue = 'expected'
+            intValue = 42
+        }
+
+        expect:
+        new ReflectionMatcherBuilder(actual, expected)
+                .excludeFields('intValue', 'not_exist', 'stringValue')
+    }
+
     def "given comparator instances shouldn't be cached and should be used once"() {
         given:
         def actual = new WithDoubles(d: 1 - 1e-15)
