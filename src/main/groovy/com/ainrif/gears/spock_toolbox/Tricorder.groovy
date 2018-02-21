@@ -17,12 +17,12 @@
 package com.ainrif.gears.spock_toolbox
 
 import com.ainrif.gears.spock_toolbox.internal.ReflectionMatcherBuilder
+import groovy.transform.PackageScope
 
 /**
  * Provides functionality to analyse objects
- * @deprecated {@link SpockToolbox} methods of these class will become private in future release
  */
-@Deprecated
+@PackageScope
 class Tricorder {
     /**
      * @see ReflectionMatcherBuilder

@@ -18,6 +18,7 @@
 package com.ainrif.gears.spock_toolbox
 
 import com.ainrif.gears.spock_toolbox.internal.ReplicatorErrorDescription
+import groovy.transform.PackageScope
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 
@@ -28,9 +29,8 @@ import static java.lang.reflect.Modifier.isFinal
 /**
  * Provides different ways to create or instantiate objects.
  * Usually used in `setup` or `given` stanzas
- * @deprecated {@link SpockToolbox} methods of these class will become private in future release
  */
-@Deprecated
+@PackageScope
 class Replicator {
 
     /**
