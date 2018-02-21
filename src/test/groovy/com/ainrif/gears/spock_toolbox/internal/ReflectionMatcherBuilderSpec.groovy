@@ -56,6 +56,30 @@ class ReflectionMatcherBuilderSpec extends Specification {
         !new ReflectionMatcherBuilder(expected, actual)
     }
 
+    def "fields from subclass of expected are considered as not set and equal to null"() {
+        given:
+        def actualWithNull = replicate(SubPojo2) {
+            stringValue = '42'
+            intValue = 42
+            stringValueSub = null
+        }
+
+        def actualWithNotNull = replicate(SubPojo2) {
+            stringValue = '42'
+            intValue = 42
+            stringValueSub = 'value'
+        }
+
+        def expected = replicate(Pojo1) {
+            stringValue = '42'
+            intValue = 42
+        }
+
+        expect:
+        new ReflectionMatcherBuilder(actualWithNull, expected)
+        !new ReflectionMatcherBuilder(actualWithNotNull, expected)
+    }
+
     def "by default order in arrays is ignored"() {
         given:
         def pojo1 = replicate(Pojo1) {
@@ -150,6 +174,10 @@ class ReflectionMatcherBuilderSpec extends Specification {
     }
 
     private static class SubPojo1 extends Pojo1 {
+    }
+
+    private static class SubPojo2 extends Pojo1 {
+        public String stringValueSub
     }
 
     private static class WithList {

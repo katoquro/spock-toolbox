@@ -22,6 +22,11 @@ import org.unitils.reflectionassert.difference.ClassDifference
 import org.unitils.reflectionassert.difference.Difference
 import org.unitils.reflectionassert.difference.ObjectDifference
 
+import java.lang.reflect.Field
+
+import static java.lang.reflect.Modifier.isStatic
+import static java.lang.reflect.Modifier.isTransient
+
 class ReflectionObjectComparator extends ObjectComparator {
     @Override
     Difference compare(Object left, Object right,
@@ -42,5 +47,43 @@ class ReflectionObjectComparator extends ObjectComparator {
         }
 
         return difference
+    }
+
+    @Override
+    protected void compareFields(Object left, Object right,
+                                 Class<?> clazz,
+                                 ObjectDifference difference, boolean onlyFirstDifference,
+                                 ReflectionComparator reflectionComparator) {
+        Field[] fields = clazz.declaredFields
+
+        for (Field field : fields) {
+            // skip transient and static fields
+            if (isTransient(field.getModifiers()) || isStatic(field.getModifiers()) || field.isSynthetic()) {
+                continue
+            }
+            field.setAccessible(true)
+            // recursively check the value of the fields
+
+            def rightValue
+            try {
+                rightValue = field.get(right)
+            } catch (IllegalArgumentException ignore) {
+                rightValue = null
+            }
+            def innerDifference = reflectionComparator.getDifference(field.get(left), rightValue, onlyFirstDifference)
+            if (innerDifference != null) {
+                difference.addFieldDifference(field.getName(), innerDifference)
+                if (onlyFirstDifference) {
+                    return
+                }
+            }
+        }
+
+        // compare fields declared in superclass
+        Class<?> superclazz = clazz.superclass
+        while (superclazz && !superclazz.getName().startsWith("java.lang")) {
+            compareFields(left, right, superclazz, difference, onlyFirstDifference, reflectionComparator)
+            superclazz = superclazz.superclass
+        }
     }
 }
