@@ -29,6 +29,8 @@ import org.unitils.reflectionassert.comparator.Comparator
  */
 class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
 
+    private static final ReflectionObjectComparator REFLECTION_OBJECT_COMPARATOR = new ReflectionObjectComparator()
+
     protected static HashMap<Class<? extends Comparator>, ? extends Comparator> modesRegistry = [
             (STRICT_ORDER)    : new STRICT_ORDER(),
             (IGNORE_TIME_DIFF): new IGNORE_TIME_DIFF(),
@@ -62,7 +64,7 @@ class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
         comparators << SIMPLE_CASES_COMPARATOR
         comparators << MAP_COMPARATOR
         comparators << HIBERNATE_PROXY_COMPARATOR
-        comparators << OBJECT_COMPARATOR
+        comparators << REFLECTION_OBJECT_COMPARATOR
 
         return new ReflectionComparator(comparators)
     }

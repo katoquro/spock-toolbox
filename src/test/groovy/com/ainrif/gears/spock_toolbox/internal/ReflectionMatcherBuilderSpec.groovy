@@ -39,9 +39,9 @@ class ReflectionMatcherBuilderSpec extends Specification {
         !new ReflectionMatcherBuilder(actual, expected)
     }
 
-    def "similar subclasses should be equal"() {
+    def "actual should have the same type or at least should be subclass of expected"() {
         given:
-        def actual = replicate(Pojo3) {
+        def actual = replicate(SubPojo1) {
             stringValue = '42'
             intValue = 42
         }
@@ -53,22 +53,7 @@ class ReflectionMatcherBuilderSpec extends Specification {
 
         expect:
         new ReflectionMatcherBuilder(actual, expected)
-    }
-
-    def "superclasses cannot be equal to subclasses"() {
-        given:
-        def actual = replicate(Pojo1) {
-            stringValue = '42'
-            intValue = 42
-        }
-
-        def expected = replicate(Pojo3) {
-            stringValue = '42'
-            intValue = 42
-        }
-
-        expect:
-        !new ReflectionMatcherBuilder(actual, expected)
+        !new ReflectionMatcherBuilder(expected, actual)
     }
 
     def "by default order in arrays is ignored"() {
@@ -147,7 +132,7 @@ class ReflectionMatcherBuilderSpec extends Specification {
         protected int intValue
     }
 
-    private static class Pojo3 extends Pojo1 {
+    private static class SubPojo1 extends Pojo1 {
     }
 
     private static class WithList {

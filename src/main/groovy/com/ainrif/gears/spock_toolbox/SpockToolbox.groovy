@@ -25,7 +25,7 @@ class SpockToolbox {
      * @see com.ainrif.gears.spock_toolbox.internal.ReflectionMatcherBuilder
      */
     static ReflectionMatcherBuilder reflects(def actual, def expected) {
-        return new ReflectionMatcherBuilder(actual, expected)
+        return Tricorder.reflects(actual, expected)
     }
 
     /**

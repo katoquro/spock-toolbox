@@ -147,7 +147,7 @@ class ReflectionMatcherBuilder {
     boolean asBoolean() {
         Difference difference = ExtendedReflectionComparatorFactory
                 .create(comparators, modes)
-                .getDifference(expected, actual)
+                .getDifference(actual, expected)
 
         if (difference) {
             diffRoot = new DiffParserVisitor().parse(difference)
