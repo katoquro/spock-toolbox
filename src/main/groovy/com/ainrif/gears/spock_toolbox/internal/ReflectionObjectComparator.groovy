@@ -33,10 +33,10 @@ class ReflectionObjectComparator extends ObjectComparator {
                        boolean onlyFirstDifference,
                        ReflectionComparator reflectionComparator) {
         // check different class type
-        Class<?> clazz = left.class
-        if (!right.class.isAssignableFrom(left.class)) {
+        Class<?> clazz = left.getClass()
+        if (!right.getClass().isAssignableFrom(left.getClass())) {
             return new ClassDifference("Left class (${left}) should coincide or be a subclass of right(${right})",
-                    left, right, left.class, right.class)
+                    left, right, left.getClass(), right.getClass())
         }
         // compare all fields of the object using reflection
         ObjectDifference difference = new ObjectDifference("Different field values", left, right)

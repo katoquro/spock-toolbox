@@ -34,8 +34,8 @@ class IGNORE_TIME_DIFF implements Comparator {
         if (!left && !right) {
             return true
         }
-        def leftIsDate = left && [Temporal, Date, Calendar].any { it.isAssignableFrom(left.class) }
-        def rightIsDate = right && [Temporal, Date, Calendar].any { it.isAssignableFrom(right.class) }
+        def leftIsDate = left && [Temporal, Date, Calendar].any { it.isAssignableFrom(left.getClass()) }
+        def rightIsDate = right && [Temporal, Date, Calendar].any { it.isAssignableFrom(right.getClass()) }
 
         if (leftIsDate && rightIsDate) {
             return true
@@ -51,8 +51,8 @@ class IGNORE_TIME_DIFF implements Comparator {
     @Override
     Difference compare(Object left, Object right,
                        boolean onlyFirstDifference, ReflectionComparator reflectionComparator) {
-        def leftIsDate = left && [Temporal, Date, Calendar].any { it.isAssignableFrom(left.class) }
-        def rightIsDate = right && [Temporal, Date, Calendar].any { it.isAssignableFrom(right.class) }
+        def leftIsDate = left && [Temporal, Date, Calendar].any { it.isAssignableFrom(left.getClass()) }
+        def rightIsDate = right && [Temporal, Date, Calendar].any { it.isAssignableFrom(right.getClass()) }
 
         if ((!right && leftIsDate) || (!left && rightIsDate)) {
             return new Difference("Time difference is ignored, but not both instantiated or both null", left, right);

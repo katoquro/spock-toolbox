@@ -39,7 +39,7 @@ class SpockToolbox {
      */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
-                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+                           @ClosureParams(FirstParam.FirstGenericType) Closure init) {
         return Replicator.replicate(type, null, init)
     }
 
@@ -60,7 +60,7 @@ class SpockToolbox {
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            List<Object> args,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
-                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+                           @ClosureParams(FirstParam.FirstGenericType) Closure init) {
         return Replicator.replicate(type, args, init)
     }
 }

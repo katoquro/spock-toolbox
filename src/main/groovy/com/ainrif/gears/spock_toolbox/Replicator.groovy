@@ -38,7 +38,7 @@ class Replicator {
      */
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
-                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+                           @ClosureParams(FirstParam.FirstGenericType) Closure init) {
         return replicate(type, null, init)
     }
 
@@ -48,7 +48,7 @@ class Replicator {
     static <T> T replicate(@DelegatesTo.Target Class<T> type,
                            List<Object> args,
                            @DelegatesTo(strategy = Closure.DELEGATE_FIRST, genericTypeIndex = 0)
-                           @ClosureParams(FirstParam.FirstGenericType.class) Closure init) {
+                           @ClosureParams(FirstParam.FirstGenericType) Closure init) {
         def instance = instantiateType(type, args as Object[])
         instance.metaClass.replicated = [set: new HashSet<String>()]
         instance.metaClass.setProperty = { name, value ->
