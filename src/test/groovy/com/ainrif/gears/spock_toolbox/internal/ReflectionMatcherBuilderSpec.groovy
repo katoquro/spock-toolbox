@@ -17,6 +17,7 @@
 package com.ainrif.gears.spock_toolbox.internal
 
 import com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE
+import com.ainrif.gears.spock_toolbox.comparator.IGNORE_ABSENT_EXPECTED_FIELDS
 import com.ainrif.gears.spock_toolbox.comparator.STRICT_ORDER
 import spock.lang.Specification
 
@@ -78,6 +79,31 @@ class ReflectionMatcherBuilderSpec extends Specification {
         expect:
         new ReflectionMatcherBuilder(actualWithNull, expected)
         !new ReflectionMatcherBuilder(actualWithNotNull, expected)
+    }
+
+    def "absent fields from expected can be ignored"() {
+        given:
+        def actualWithNull = replicate(SubPojo2) {
+            stringValue = '42'
+            intValue = 42
+            stringValueSub = null
+        }
+
+        def actualWithNotNull = replicate(SubPojo2) {
+            stringValue = '42'
+            intValue = 42
+            stringValueSub = 'value'
+        }
+
+        def expected = replicate(Pojo1) {
+            stringValue = '42'
+            intValue = 42
+        }
+
+        expect: 'when subclass field is null mode is not applied'
+        new ReflectionMatcherBuilder(actualWithNull, expected).modes(IGNORE_ABSENT_EXPECTED_FIELDS)
+        and: 'when subclass fields is not null mode ignores them'
+        new ReflectionMatcherBuilder(actualWithNotNull, expected).modes(IGNORE_ABSENT_EXPECTED_FIELDS)
     }
 
     def "by default order in arrays is ignored"() {

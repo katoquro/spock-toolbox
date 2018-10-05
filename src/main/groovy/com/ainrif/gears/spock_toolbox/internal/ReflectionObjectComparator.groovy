@@ -27,7 +27,16 @@ import java.lang.reflect.Field
 import static java.lang.reflect.Modifier.isStatic
 import static java.lang.reflect.Modifier.isTransient
 
-class ReflectionObjectComparator extends ObjectComparator {
+class ReflectionObjectComparator extends ObjectComparator implements FinalChainComparator {
+
+    boolean ignoreAbsentFields = false
+
+    ReflectionObjectComparator() {}
+
+    ReflectionObjectComparator(boolean ignoreAbsentFields) {
+        this.ignoreAbsentFields = ignoreAbsentFields
+    }
+
     @Override
     Difference compare(Object left, Object right,
                        boolean onlyFirstDifference,
@@ -64,13 +73,18 @@ class ReflectionObjectComparator extends ObjectComparator {
             field.setAccessible(true)
             // recursively check the value of the fields
 
+            def leftValue = field.get(left)
             def rightValue
             try {
                 rightValue = field.get(right)
             } catch (IllegalArgumentException ignore) {
                 rightValue = null
+                if (ignoreAbsentFields) {
+                    leftValue = null
+                }
             }
-            def innerDifference = reflectionComparator.getDifference(field.get(left), rightValue, onlyFirstDifference)
+
+            def innerDifference = reflectionComparator.getDifference(leftValue, rightValue, onlyFirstDifference)
             if (innerDifference != null) {
                 difference.addFieldDifference(field.getName(), innerDifference)
                 if (onlyFirstDifference) {

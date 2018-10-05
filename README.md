@@ -112,6 +112,7 @@ Modes can be found at package: `com.ainrif.gears.spock_toolbox.comparator`
 1. IGNORE_DEFAULTS - relaxed comparison for null and default values of primitive types
 1. IGNORE_TIME_DIFF - objects with diff only in time are equal, also supports jsr310
 1. STRICT_ORDER - validated orders for ordered collections
+1. IGNORE_ABSENT_EXPECTED_FIELDS - if _expected_ is superclass of _actual_ absent fields won't generate difference
 
 ```
 #!groovy

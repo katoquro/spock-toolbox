@@ -16,6 +16,7 @@
 
 package com.ainrif.gears.spock_toolbox.internal
 
+
 import com.ainrif.gears.spock_toolbox.comparator.DOUBLE_SCALE
 import com.ainrif.gears.spock_toolbox.comparator.IGNORE_DEFAULTS
 import com.ainrif.gears.spock_toolbox.comparator.IGNORE_TIME_DIFF
@@ -31,7 +32,7 @@ class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
 
     private static final ReflectionObjectComparator REFLECTION_OBJECT_COMPARATOR = new ReflectionObjectComparator()
 
-    protected static HashMap<Class<? extends Comparator>, ? extends Comparator> modesRegistry = [
+    protected static LinkedHashMap<Class<? extends Comparator>, ? extends Comparator> modesRegistry = [
             (STRICT_ORDER)    : new STRICT_ORDER(),
             (IGNORE_TIME_DIFF): new IGNORE_TIME_DIFF(),
             (IGNORE_DEFAULTS) : new IGNORE_DEFAULTS(),
@@ -64,7 +65,21 @@ class ExtendedReflectionComparatorFactory extends ReflectionComparatorFactory {
         comparators << SIMPLE_CASES_COMPARATOR
         comparators << MAP_COMPARATOR
         comparators << HIBERNATE_PROXY_COMPARATOR
-        comparators << REFLECTION_OBJECT_COMPARATOR
+
+        def finalComparators = comparators.findAll { it instanceof FinalChainComparator }
+        if (finalComparators.size() > 1) {
+            def errorMsg = "There are more than 1 ${FinalChainComparator.simpleName} comparators: " +
+                    "${finalComparators*.class*.simpleName}."
+            throw new RuntimeException(errorMsg)
+        }
+
+        if (finalComparators.size() == 1) {
+            def endComparator = finalComparators[0]
+            comparators.remove(endComparator)
+            comparators << endComparator
+        } else {
+            comparators << REFLECTION_OBJECT_COMPARATOR
+        }
 
         return new ReflectionComparator(comparators)
     }
