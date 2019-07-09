@@ -13,7 +13,7 @@ jar {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
     manifest {
         from sharedManifest
@@ -43,9 +43,9 @@ bintray {
         userOrg = 'ainrif'
         name = project.rootProject.name
         desc = 'Utils for Spock testing framework'
-        websiteUrl = 'https://bitbucket.org/ainrif/spock-toolbox'
-        issueTrackerUrl = 'https://bitbucket.org/ainrif/spock-toolbox/issues'
-        vcsUrl = 'git@bitbucket.org:ainrif/spock-toolbox.git'
+        websiteUrl = 'https://github.com/ainrif/spock-toolbox'
+        issueTrackerUrl = 'https://github.com/ainrif/spock-toolbox/issues'
+        vcsUrl = 'git@github.com:ainrif/spock-toolbox.git'
         licenses = ['Apache-2.0']
         labels = ['test', 'spock', 'util', 'groovy']
         publicDownloadNumbers = true

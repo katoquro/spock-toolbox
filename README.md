@@ -3,7 +3,6 @@
 Toolbox is a set of small utilities to make Spock Framework Specifications 
 more readable and easier to write
 
-[TOC]
 
 ## Getting Started
 
@@ -26,8 +25,7 @@ There are several "tools" which are accessible through the one entry point
 Replicator creates objects based on given settings and check 
 that there are no extra ~~atoms~~ setters which weren't used
 
-```
-#!groovy
+```groovy
 def pogo = SpockToolbox.replicate(CustomPogoClass) {
     pogoStringField = 'value'
     pogoIntField = 42
@@ -52,8 +50,7 @@ Tricorder analyzes given objects
 To compare two objects toolbox provides `reflects` method.
 You can use it in assertion stanza. 
   
-```
-#!groovy
+```groovy
 // Spock Specification on Groovy  
 then:
 SpockToolbox.reflects(actual, expected)
@@ -67,8 +64,7 @@ assert SpockToolbox.reflects(actual, expected).asBoolean()
 Sometimes objects have dynamic fields (like time, date, id) 
 and should be excluded from comparison. 
 
-```
-#!groovy
+```groovy
 SpockToolbox.reflects(actual, expected)
     .excludeField('fieldToxclude')
     .excludeField('nestedObject.fieldToExclude')
@@ -78,8 +74,7 @@ SpockToolbox.reflects(actual, expected)
 
 There is special syntax to exclude map keys and array items by index
 
-```
-#!groovy
+```groovy
 SpockToolbox.reflects(actual, expected)
     .excludeField('mapField[keyToExclude]')
     .excludeField('arrayField[1]')
@@ -93,8 +88,7 @@ Some rules of comparison can be override with custom comparators.
 Custom comparators must implement `org.unitils.reflectionassert.comparator.Comparator`
 and set into the reflection builder: 
 
-```
-#!groovy
+```groovy
 SpockToolbox.reflects(actual, expected)
     .comparator(new CustomComparator(settings))
 ```    
@@ -114,8 +108,7 @@ Modes can be found at package: `com.ainrif.gears.spock_toolbox.comparator`
 1. STRICT_ORDER - validated orders for ordered collections
 1. IGNORE_ABSENT_EXPECTED_FIELDS - if _expected_ is superclass of _actual_ absent fields won't generate difference
 
-```
-#!groovy
+```groovy
 SpockToolbox.reflects(actual, expected)
     .mode(STRICT_ORDER)
     .comparator(DOUBLE_SCALE.scale(1e-2d))
