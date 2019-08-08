@@ -16,6 +16,8 @@
 
 package com.ainrif.gears.spock_toolbox.internal
 
+import static java.lang.System.lineSeparator
+
 class DiffReport {
     private DiffNode root
     private String report
@@ -44,17 +46,17 @@ class DiffReport {
     void processNode(DiffNode node, String designationPrefix, StringBuilder builder) {
         def currentDesignation = "${designationPrefix}${designationPrefix ? '.' : ''}${node.designation}"
         if (node.hasDiff()) {
-            builder.append('\n')
-                    .append('at ').append(currentDesignation).append('\n')
-                    .append('\texpected: ').append(node.expected).append('\n')
-                    .append('\t but was: ').append(node.actual).append('\n')
+            builder.append(lineSeparator())
+                    .append('at ').append(currentDesignation).append(lineSeparator())
+                    .append('\texpected: ').append(node.expected).append(lineSeparator())
+                    .append('\t but was: ').append(node.actual).append(lineSeparator())
+
         }
 
-        if (node.nodes) {
+        if (!node.excluded) {
             node.nodes.each {
                 processNode(it, currentDesignation, builder)
             }
         }
     }
-
 }

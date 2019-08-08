@@ -38,7 +38,7 @@ class DiffReportSpec extends Specification {
                     nodes = []
                     actual = '1'
                     expected = '2'
-                    excluded = true
+                    excluded = false
                 }]
                 actual = '1'
                 expected = '2'
@@ -82,6 +82,51 @@ class DiffReportSpec extends Specification {
         then:
         report == '''
             at _.a
+            \texpected: 2
+            \t but was: 1
+            '''.stripIndent()
+    }
+
+    def "report should skip excluded nodes during printing other diffs"() {
+        given:
+        def root = replicate(DiffNode) {
+            array = false
+            designation = ROOT_DESIGNATION
+            actual = null
+            expected = null
+            excluded = false
+            nodes = [
+                    replicate(DiffNode) {
+                        array = false
+                        designation = 'a'
+                        nodes = [replicate(DiffNode) {
+                            array = false
+                            designation = 'ab'
+                            nodes = []
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                        }]
+                        actual = '1'
+                        expected = '2'
+                        excluded = true
+                    },
+                    replicate(DiffNode) {
+                        array = false
+                        designation = 'b'
+                        nodes = []
+                        actual = '1'
+                        expected = '2'
+                        excluded = false
+                    }
+            ]
+        }
+        when:
+        def report = new DiffReport(root).createReport()
+
+        then:
+        report == '''
+            at _.b
             \texpected: 2
             \t but was: 1
             '''.stripIndent()

@@ -87,6 +87,68 @@ class DiffNodeSpec extends Specification {
         node.nodes.first().nodes.first().excluded
     }
 
+
+    def "should support wildcards as intermediate and last token for object (Map)"() {
+        given:
+        def node = replicate(DiffNode) {
+            array = false
+            designation = ROOT_DESIGNATION
+            actual = null
+            expected = null
+            excluded = false
+            nodes = [replicate(DiffNode) {
+                array = false
+                designation = 'objectOrMap'
+                actual = null
+                expected = null
+                excluded = false
+                nodes = [
+                        replicate(DiffNode) {
+                            array = false
+                            designation = 'a'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = []
+                        },
+                        replicate(DiffNode) {
+                            array = false
+                            designation = 'b'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = []
+                        },
+                        replicate(DiffNode) {
+                            array = false
+                            designation = 'c'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = [replicate(DiffNode) {
+                                array = false
+                                designation = 'c2'
+                                actual = '1'
+                                expected = '2'
+                                excluded = false
+                                nodes = []
+                            }]
+                        }]
+            }]
+        }
+        when:
+        node.exclude(DiffPath.fromString('*.a'))
+        node.exclude(DiffPath.fromString('*.c.*'))
+
+        then:
+        !node.excluded
+        !node.nodes.first().excluded
+        node.nodes.first().nodes.find { it.designation == 'a' }.excluded
+        !node.nodes.first().nodes.find { it.designation == 'b' }.excluded
+        !node.nodes.first().nodes.find { it.designation == 'c' }.excluded
+        node.nodes.first().nodes.find { it.designation == 'c' }.nodes.first().excluded
+    }
+
     def "should support exclude of array fields"() {
         given:
         def node = replicate(DiffNode) {
@@ -144,12 +206,73 @@ class DiffNodeSpec extends Specification {
             }]
         }
         when:
-        node.exclude(DiffPath.fromString('arrayField[1]'))
+        node.exclude(DiffPath.fromString('arrayField.1'))
 
         then:
         !node.excluded
         !node.nodes.first().excluded
         !node.nodes.first().nodes.find { it.designation == '0' }.excluded
         node.nodes.first().nodes.find { it.designation == '1' }.excluded
+    }
+
+    def "should support wildcards as intermediate and last token for arrays"() {
+        given:
+        def node = replicate(DiffNode) {
+            array = false
+            designation = ROOT_DESIGNATION
+            actual = null
+            expected = null
+            excluded = false
+            nodes = [replicate(DiffNode) {
+                array = false
+                designation = 'arrayField'
+                actual = null
+                expected = null
+                excluded = false
+                nodes = [
+                        replicate(DiffNode) {
+                            array = false
+                            designation = '0'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = []
+                        },
+                        replicate(DiffNode) {
+                            array = false
+                            designation = '1'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = []
+                        },
+                        replicate(DiffNode) {
+                            array = false
+                            designation = '2'
+                            actual = '1'
+                            expected = '2'
+                            excluded = false
+                            nodes = [replicate(DiffNode) {
+                                array = false
+                                designation = '22'
+                                actual = '1'
+                                expected = '2'
+                                excluded = false
+                                nodes = []
+                            }]
+                        }]
+            }]
+        }
+        when:
+        node.exclude(DiffPath.fromString('*.1'))
+        node.exclude(DiffPath.fromString('*.2.*'))
+
+        then:
+        !node.excluded
+        !node.nodes.first().excluded
+        !node.nodes.first().nodes.find { it.designation == '0' }.excluded
+        node.nodes.first().nodes.find { it.designation == '1' }.excluded
+        !node.nodes.first().nodes.find { it.designation == '2' }.excluded
+        node.nodes.first().nodes.find { it.designation == '2' }.nodes.first().excluded
     }
 }

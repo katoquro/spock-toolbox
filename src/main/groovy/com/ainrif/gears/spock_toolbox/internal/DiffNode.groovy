@@ -60,7 +60,7 @@ class DiffNode {
     void exclude(DiffPath path) {
         if (path.hasNext()) {
             def next = path.nextToken()
-            if (array && WILDCARD == next.token) {
+            if (WILDCARD == next.token) {
                 nodes.each { it.exclude(next) }
             } else {
                 nodes.find { it.designation == next.token }

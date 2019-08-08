@@ -76,10 +76,18 @@ There is special syntax to exclude map keys and array items by index
 
 ```groovy
 SpockToolbox.reflects(actual, expected)
-    .excludeField('mapField[keyToExclude]')
-    .excludeField('arrayField[1]')
-    .excludeField('arrayField[2]')
+    .excludeField('mapField.keyToExclude')
+    .excludeField('arrayField.1')
+    .excludeField('arrayField.2')
     .excludeField('arrayField') // to exclude the whole array
+``` 
+
+If some fields are undefined are dynamic they can be replaced with wildcard `*`
+
+```groovy
+SpockToolbox.reflects(actual, expected)
+    .excludeField('a.*.c') // a.b.c, a.d.c etc. will be excluded
+    .excludeField('a.b.*') // the same as to exclude a.b
 ``` 
 
 #### Custom comparator for objects

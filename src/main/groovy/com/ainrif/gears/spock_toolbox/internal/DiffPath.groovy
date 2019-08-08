@@ -20,7 +20,8 @@ import static java.util.Collections.singletonList
 
 class DiffPath {
     static final String WILDCARD = '*'
-    static final List<String> ROOT = singletonList(DiffNode.ROOT_DESIGNATION)
+
+    private static final List<String> ROOT = singletonList(DiffNode.ROOT_DESIGNATION)
 
     private int offset = 0
     private List<String> tokens
@@ -38,20 +39,8 @@ class DiffPath {
     }
 
     static DiffPath fromString(String path) {
-        def tokens = path.split(/\./).collectMany {
-            if (it.contains('[')) {
-                def array = it.split(/\[/, 2)
-                if (2 == array[1].size() && WILDCARD == array[1][0]) {
-                    return [array[0], WILDCARD]
-                }
-                def index = array[1].find(~/\d{1,3}/)
-                return [array[0], index]
-            } else {
-                return singletonList(it)
-            }
-        }
+        def tokens = path.tokenize('.')
 
         return new DiffPath(tokens: ROOT + tokens)
     }
-
 }

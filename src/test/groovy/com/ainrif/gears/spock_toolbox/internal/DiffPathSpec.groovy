@@ -34,27 +34,19 @@ class DiffPathSpec extends Specification {
 
         where:
         data << [
-                a         : replicate(DiffPath) {
+                a        : replicate(DiffPath) {
                     offset = 0
                     tokens = [ROOT_DESIGNATION, 'a']
                 },
-                'a.b'     : replicate(DiffPath) {
+                'a.b'    : replicate(DiffPath) {
                     offset = 0
                     tokens = [ROOT_DESIGNATION, 'a', 'b']
                 },
-                'a.b[*].c': replicate(DiffPath) {
+                'a.b.*.c': replicate(DiffPath) {
                     offset = 0
                     tokens = [ROOT_DESIGNATION, 'a', 'b', '*', 'c']
                 },
-                'a.b[1].c': replicate(DiffPath) {
-                    offset = 0
-                    tokens = [ROOT_DESIGNATION, 'a', 'b', '1', 'c']
-                },
-                'a.b.*.c' : replicate(DiffPath) {
-                    offset = 0
-                    tokens = [ROOT_DESIGNATION, 'a', 'b', '*', 'c']
-                },
-                'a.b.1.c' : replicate(DiffPath) {
+                'a.b.1.c': replicate(DiffPath) {
                     offset = 0
                     tokens = [ROOT_DESIGNATION, 'a', 'b', '1', 'c']
                 }
@@ -63,7 +55,7 @@ class DiffPathSpec extends Specification {
 
     def "path should return token corresponding to next calls"() {
         given:
-        def root = DiffPath.fromString('a.b.c[*].d[1].f')
+        def root = DiffPath.fromString('a.b.c.*.d.1.f')
 
         expect:
         root.token == ROOT_DESIGNATION
