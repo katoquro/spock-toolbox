@@ -1,4 +1,5 @@
-apply plugin: "com.jfrog.bintray"
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 ext.sharedManifest = manifest {
     attributes 'Implementation-Vendor': group,
@@ -12,6 +13,11 @@ jar {
     }
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set('javadoc')
+    from javadoc
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier.set('sources')
     from sourceSets.main.allSource
@@ -20,40 +26,75 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     }
 }
 
+artifacts {
+    archives sourcesJar
+}
+
 publishing {
     publications {
-        toMaven(MavenPublication) {
+        mavenCentral(MavenPublication) {
+            customizePom(pom)
+
             from components.java
 
             artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username findProperty('sonatypeUsername')
+                password findProperty('sonatypePassword')
+            }
         }
     }
 }
 
-bintray {
-    user = project.findProperty('bintray_api_user')
-    key = project.findProperty('bintray_api_key')
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+    sign publishing.publications.mavenCentral
+}
 
-    publications = ['toMaven']
+void customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
 
-    dryRun = false
-    publish = true
-    pkg {
-        repo = 'maven'
-        userOrg = 'ainrif'
-        name = project.rootProject.name
-        desc = 'Utils for Spock testing framework'
-        websiteUrl = 'https://github.com/ainrif/spock-toolbox'
-        issueTrackerUrl = 'https://github.com/ainrif/spock-toolbox/issues'
-        vcsUrl = 'git@github.com:ainrif/spock-toolbox.git'
-        licenses = ['Apache-2.0']
-        labels = ['test', 'spock', 'util', 'groovy']
-        publicDownloadNumbers = true
-        version {
-            name = project.version
-            vcsTag = project.version
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            name project.name
+            description 'Toolbox is a set of small utilities to make Spock Framework Specifications more readable and easier to write'
+
+            url 'https://github.com/ainrif/spock-toolbox/'
+
+            organization {
+                name 'Ainrif'
+                url 'https://github.com/ainrif'
+            }
+            licenses {
+                license {
+                    name 'Apache License 2.0'
+                    url 'https://github.com/ainrif/spock-toolbox/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/ainrif/spock-toolbox'
+                connection 'scm:git:https://github.com/ainrif/spock-toolbox.git'
+                developerConnection 'scm:git:git@github.com:ainrif/spock-toolbox.git'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/ainrif/spock-toolbox/issues'
+            }
+            developers {
+                developer {
+                    name 'Andrew Malyhin'
+                    email 'katoquro@gmail.com'
+                }
+            }
         }
     }
 }
-
-publish.dependsOn bintrayUpload
