@@ -14,6 +14,11 @@ Get artifact from
 [artifact_img]: https://img.shields.io/maven-central/v/com.ainrif.gears/spock-toolbox?color=blue&style=flat-square
 [artifact]: https://search.maven.org/search?q=g:%22com.ainrif.gears%22
 
+Built and tested with: 
+- Java 17
+- Groovy 4
+- Spock 2
+
 ## Usage
 
 There are several "tools" which are accessible through the one entry point
